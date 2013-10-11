@@ -51,6 +51,13 @@
 ;;           (comint-run "csharp")
 ;; 	  ))))
 
+(defun run-csharp-shell ()
+  (interactive)
+  (split-window)
+  (other-window 1)
+  (inferior-csharp-shell)
+  (csharp-shell-mode))
+
 (defun inferior-csharp-shell ()
   "Run an inferior instance of `csharp' inside Emacs."
   (interactive)
@@ -66,14 +73,14 @@
     ;; create the comint process if there is no buffer.
     (unless buffer
       (apply 'make-comint-in-buffer "csharp" buffer
-             csharp-program csharp-shell-arguments)
+	     csharp-program csharp-shell-arguments)
       )))
 
 (defun inferior-csharp-shell--initialize ()
   "Helper function to initialize csharp-shell"
   (setq comint-process-echoes t)
-  (setq comint-use-prompt-regexp t)
-  (csharp-shell-mode))
+  (setq comint-use-prompt-regexp t))
+;;  (csharp-shell-mode))
  
 (define-derived-mode csharp-shell-mode comint-mode "csharp"
   "Major mode for `csharp-shell'.
@@ -97,3 +104,6 @@
 
 ;; comint-dynamic-complete-filename <- for LoadAssembly and functions that take file names
 
+;; process-environment
+(define-key csharp-mode-map (kbd "C-c C-z") 'run-csharp-shell)
+;;(define-key csharp-mode-map (kbd "C-c C-c") 'csharp-invoke-compile-interactively) ;; what the fuck... why would someone bind C-c C-x?? 
